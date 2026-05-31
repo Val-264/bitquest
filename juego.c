@@ -65,3 +65,81 @@ char mapa_nivel1[FILAS][COLUMNAS] = {
     {4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4},
     {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 6, 4}
 };
+
+//Posicion inicial del jugador en el mapa gigante (Fila 1, Columna 1)
+int jugador_x = 1;
+int jugador_y = 1;
+
+void imprimir_mapa(){
+    //1. Calcular las coordenadas de inicio de nuestra ventana de 20x20
+    //Intentamos centrar al jugador restando 10 a su posicion actual
+    int inicio_fila = jugador_x - 10;
+    int inicio_col = jugador_y - 10;
+
+    //2. Ajustar los limites para que la ventana no intente leer fuera de la matriz (0 - 50)
+    // Si la ventana empieza antes de 0, la forzamos a 0
+    if(inicio_fila < 0){
+        inicio_fila = 0;
+    }
+    if(inicio_col < 0){
+        inicio_col = 0;
+    }
+    // Si la ventana se pasa del límite superior (60 - 20 = 40), la detenemos en 40
+    if(inicio_fila > FILAS - 20){
+        inicio_fila = FILAS - 20;
+    }
+    if(inicio_col > COLUMNAS - 20){
+        inicio_col = COLUMNAS - 20;
+    }
+
+    // Limpiamos la pantalla de la consola (mantiene la vista estática)
+    system("cls");
+
+    printf("\x1b[1;35m=== BITQUEST (20x20) ===\x1b[0m\n\n");
+
+    //3. Imprimir la seccion de 20x20 
+    for(int i=inicio_fila; i<inicio_fila + 20; i++){
+        for(int j=inicio_col; j<inicio_col + 20; j++){
+
+            //Miramos el valor numerico de la matri y pintamos su caracter equivalente
+            switch(mapa_nivel1[i][j]){
+                case 4:  
+                    // Muros: Verde (\x1b[32m) usando bloque ASCII sólido doble (219)
+                    printf("\x1b[32m%c%c", 219, 219); 
+                    break; 
+                case 0:  
+                    // Camino libre: Espacio vacío doble
+                    printf("  "); 
+                    break; 
+                case 1:  
+                    // Jugador: Blanco (\x1b[37m) con la letra 'P' encerrada o decorada
+                    printf("\x1b[37mP "); 
+                    break; 
+                case 2:  
+                    // Moneda: Amarillo (\x1b[33m) usando el signo de pesos '$'
+                    printf("\x1b[33m$ "); 
+                    break; 
+                case 3:  
+                    // Llave: Cyan (\x1b[36m) usando el caracter especial de llave (190)
+                    printf("\x1b[36m%c ", 190); 
+                    break; 
+                case 5:  
+                    // Puerta: Rojo (\x1b[31m) usando doble línea vertical (186)
+                    printf("\x1b[31m%c%c", 186, 186); 
+                    break; 
+                case 6:  
+                    // Salida: Cyan (\x1b[36m) con bloque sombreado (176)
+                    printf("\x1b[36m%c%c", 176, 176); 
+                    break; 
+                default: 
+                    printf("  "); 
+                    break;
+            }
+        }
+        // Al terminar la fila, reiniciamos el color por seguridad y saltamos de línea
+        printf("\x1b[0m\n");
+    }
+    // Asegurar que el color de la terminal regrese a la normalidad
+    printf("\x1b[0m");
+
+}

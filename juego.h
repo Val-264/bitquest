@@ -58,4 +58,9 @@ int detectar_objeto(char *matriz, int revisar_x,
 */
 int contar_celdas_libres(char *matriz, int tot_celdas);
 
+//Variables de posicion del jugador y funcion de renderizado
+extern int jugador_x;
+extern int jugador_y;
+void imprimir_mapa();
+
 #endif 
