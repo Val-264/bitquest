@@ -73,7 +73,7 @@ int main () {
                 // 3. Colocamos el valor del jugador (1) en la nueva celda de la matriz
                 mapa_nivel1[jugador_x][jugador_y] = 1;
                 
-                // 4. Incrementamos el contador de pasos de la sesión [cite: 157, 194]
+                // 4. Incrementamos el contador de pasos de la sesión 
                 pasos++;
             }
         }
