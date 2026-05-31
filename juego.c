@@ -3,6 +3,10 @@
 #include <stdlib.h>
 #include "juego.h"
 
+// Variables de estado del jugador (Compartidas con main.c)
+int jugador_x = 1;
+int jugador_y = 1;
+
 // Aquí definimos el mapa real una única vez para todo el proyecto
 char mapa_nivel1[FILAS][COLUMNAS] = {
     {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4},
@@ -66,9 +70,8 @@ char mapa_nivel1[FILAS][COLUMNAS] = {
     {4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 6, 4}
 };
 
-//Posicion inicial del jugador en el mapa gigante (Fila 1, Columna 1)
-int jugador_x = 1;
-int jugador_y = 1;
+// TODO: DEFINIR AQUÍ LAS MATRICES PARA EL NIVEL 2 Y NIVEL 3 (Matrices de 60x60 obligatorias)
+
 
 void imprimir_mapa(){
     //1. Calcular las coordenadas de inicio de nuestra ventana de 20x20
@@ -143,3 +146,6 @@ void imprimir_mapa(){
     printf("\x1b[0m");
 
 }
+
+// TODO: Implementar función 'cambiar_nivel(int nivel_destino)' para mover al jugador a la posición de inicio del nuevo mapa
+// TODO: Implementar función 'mostrar_resumen_nivel()' para imprimir estadísticas al tocar la salida 'E'
