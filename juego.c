@@ -103,7 +103,7 @@ void imprimir_mapa(){
 
     // Limpiamos la pantalla de la consola (mantiene la vista estática)
     system("cls");
-
+    
     printf("\x1b[1;35m=== BITQUEST (20x20) ===\x1b[0m\n\n");
 
     //3. Imprimir la seccion de 20x20 
