@@ -47,8 +47,7 @@ int calcular_puntaje(int monedas_recolectadas, int tot_pasos, int niveles_ok);
 *@param Caracter del objeto a revisar 
 *@return Objeto encontrado = 1, no encontrado = 0
 */
-int detectar_objeto(char *matriz, int revisar_x,   
-                    int revisar_y, char carac_revisar);
+int detectar_objeto(char *matriz, int columnas, int revisar_x, int revisar_y, char carac_revisar);
 
 /*
 *@brief Contar celdas libres

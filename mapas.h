@@ -1,4 +1,4 @@
-// Declaración de los mapas de cada nivel.
+// Declaración de los mapas de cada nivel
 
 #ifndef MAPAS_H
 #define MAPAS_H
@@ -7,19 +7,8 @@
 #define FILAS 60
 #define COLUMNAS 60
 
-/*
-Matriz  ASCII   Representa
-4       219     pared
-0       32      camino libre
-1       80      jugador
-2       36      moneda
-3       190     llave
-5       186     puerta
-6       176     salida
-*/
-
-// Cambiamos 'int' por 'char' para que coincida con juego.h y optimice NASM
-// Agregamos 'extern'. Esto le dice a todos los archivos .c: 
-// "El mapa existe, mide 60x60 y es tipo char, pero no lo crees aquí".
+// El mapa se declara extern aquí para que todos los .c vean la misma matriz.
+// La definición real (inicialización) debe ir en un solo archivo .c, no en el header,
+// porque de lo contrario cada .c tendría su propia copia separada del mapa.
 extern char mapa_nivel1[FILAS][COLUMNAS];
 #endif

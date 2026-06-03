@@ -39,42 +39,136 @@ contar_caracteres_del_mapa:
     ret             ;El resultado de la funcion se devuelve en eax
 
 ; =========================================================================
-; TODO: FUNCION 2: Validar movimiento [cite: 140]
+; FUNCION 2: Validar movimiento
 ; RCX = char* matriz, RDX = columnas (60), R8D = proximo_x, R9D = proximo_y 
 ; Debe calcular el índice en el arreglo plano: (proximo_x * columnas) + proximo_y
-; Retornar 1 si es caminable (0), retornar 0 si es pared (4) o está bloqueado
+; Retornar 1 si es caminable '.', retornar 0 si es pared '#' o está bloqueado
 ; =========================================================================
 validar_movimiento:
-    ; Integrar código aquí
-    mov eax, 1 ; Retorno temporal para que permita avanzar las pruebas
+    xor eax, eax
+    
+    cmp r8d, 0
+    jl .no_valido
+    cmp r8d, 59
+    jg .no_valido
+    cmp r9d, 0
+    jl .no_valido
+    cmp r9d, 59
+    jg .no_valido
+    
+    mov r10d, edx          ; guardar columnas antes de que edx se corrompa
+    mov eax, r8d
+    imul eax, r10d
+    add eax, r9d
+    
+    movzx eax, byte [rcx + rax]
+    
+    cmp al, '#'
+    je .no_valido
+    
+    mov eax, 1
     ret
-
+    
+.no_valido:
+    xor eax, eax
+    ret
 ; =========================================================================
-; TODO: FUNCION 3: Calcular puntaje 
+; FUNCION 3: Calcular puntaje 
 ; RCX = monedas, RDX = pasos, R8 = niveles_completados 
 ; Aplicar fórmula matemática en ensamblador y regresar el entero en EAX
 ; =========================================================================
 calcular_puntaje:
-    ; Integrar código aquí
+    ; monedas * 150
+    mov eax, ecx
+    imul eax, 150
+
+    ; niveles * 1000
+    mov ecx, eax
+    mov eax, r8d
+    imul eax, 1000
+
+    ; sumar puntos por niveles y restar penalización por pasos
+    add eax, ecx
+    mov ecx, edx
+    imul ecx, 5
+    sub eax, ecx
+
+    ; asegurarse de no devolver valor negativo
+    cmp eax, 0
+    jge .fin_calc
     xor eax, eax
+
+.fin_calc:
     ret
 
 ; =========================================================================
-; TODO: FUNCION 4: Detectar objeto en una celda 
+; FUNCION 4: Detectar objeto en una celda 
 ; RCX = char* matriz, RDX = columnas, R8D = x, R9D = y, [rsp+40] = caracter a buscar
 ; Retornar 1 si el objeto coincide con la celda, 0 si no
 ; =========================================================================
 detectar_objeto:
-    ; Integrar código aquí
+    xor eax, eax
+    
+    cmp r8d, 0
+    jl .fin_det
+    cmp r8d, 59
+    jg .fin_det
+    cmp r9d, 0
+    jl .fin_det
+    cmp r9d, 59
+    jg .fin_det
+    
+    mov r10d, edx          ; guardar columnas antes de que edx se corrompa
+    mov eax, r8d
+    imul eax, r10d
+    add eax, r9d
+    
+    movzx eax, byte [rcx + rax]
+    
+    mov dl, byte [rsp + 32]   ; leer el 5to parámetro (aquí edx ya no importa)
+    
+    cmp al, dl
+    jne .no_coincide
+    mov eax, 1
+    ret
+    
+.no_coincide:
+    xor eax, eax
+    ret
+    
+.fin_det:
     xor eax, eax
     ret
 
 ; =========================================================================
-; TODO: FUNCION 5: Contar celdas libres 
+; FUNCION 5: Contar celdas libres 
 ; RCX = char* matriz, RDX = total_celdas (3600) 
 ; Recorrer la matriz y contar cuántas celdas tienen el valor 0
 ; =========================================================================
 contar_celdas_libres:
-    ; Integrar código aquí
+    ; Inicializamos el contador de celdas libres en 0
     xor eax, eax
+
+    ; Si el total de celdas es 0 o negativo, no hay nada que contar
+    test rdx, rdx
+    jle .fin_libres
+
+.libre_bucle:
+     ; Retrocedemos un índice en el arreglo lineal
+    dec rdx
+
+    ; Leemos el carácter de la celda actual
+    mov al, [rcx + rdx]
+
+    ; Si la celda es '.' significa camino libre
+    cmp al, '.'
+    jne .no_incremento
+    inc eax
+
+.no_incremento:
+    ; Repetimos hasta que hayamos recorrido todas las celdas
+    cmp rdx, 0
+    jg .libre_bucle
+
+.fin_libres:
     ret
