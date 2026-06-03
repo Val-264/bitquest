@@ -125,7 +125,7 @@ detectar_objeto:
     
     movzx eax, byte [rcx + rax]
     
-    mov dl, byte [rsp + 32]   ; leer el 5to parámetro (aquí edx ya no importa)
+    mov dl, byte [rsp + 40]   ; leer el 5to parámetro (aquí edx ya no importa)
     
     cmp al, dl
     jne .no_coincide
