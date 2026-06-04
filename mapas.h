@@ -11,4 +11,7 @@
 // La definición real (inicialización) debe ir en un solo archivo .c, no en el header,
 // porque de lo contrario cada .c tendría su propia copia separada del mapa.
 extern char mapa_nivel1[FILAS][COLUMNAS];
+extern char mapa_nivel2[FILAS][COLUMNAS];
+extern char mapa_nivel3[FILAS][COLUMNAS];
+
 #endif

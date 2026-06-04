@@ -57,9 +57,25 @@ int detectar_objeto(char *matriz, int columnas, int revisar_x, int revisar_y, ch
 */
 int contar_celdas_libres(char *matriz, int tot_celdas);
 
+extern char (*mapas[3])[COLUMNAS];
+
 //Variables de posicion del jugador y funcion de renderizado
 extern int jugador_x;
 extern int jugador_y;
 void imprimir_mapa();
+
+// Nivel activo: 0 = nivel1, 1 = nivel2, 2 = nivel3
+// Se usa en imprimir_mapa() para saber qué mapa dibujar
+extern int nivel_actual;
+
+// Cambia el estado interno al nivel indicado (1, 2 o 3)
+// Reposiciona al jugador en la celda 'P' del nuevo mapa
+void cambiar_nivel(int nivel);
+
+// Imprime el resumen al terminar un nivel
+void mostrar_resumen_nivel(int nivel, int monedas_rec, int monedas_tot, int pasos, int puntaje_parcial);
+
+// Imprime el resumen final al terminar los 3 niveles
+void mostrar_resumen_final(int monedas_rec_total, int monedas_tot_total,int pasos_totales, int niveles_completados, int puntaje_final);
 
 #endif 

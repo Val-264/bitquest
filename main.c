@@ -4,118 +4,151 @@
 #include <conio.h>
 #include "juego.h"
 
+
 int main () {
-    //1. INICIALIZACION DEL JUEGO
+    // INICIALIZACION DEL JUEGO
     int total_celdas = FILAS * COLUMNAS;
     char buscar_moneda = 'M';
 
-    // Calculamos el total de monedas del nivel usando NASM
-    int monedas_totales = contar_caracteres_del_mapa((char *)mapa_nivel1, total_celdas, buscar_moneda);
+    // ── Acumuladores globales del juego ──
+    int monedas_globales_rec  = 0; // monedas totales en todos los niveles
+    int monedas_globales_tot  = 0; // monedas disponibles en todos los niveles
+    int pasos_globales        = 0;
+    int niveles_completados   = 0;
 
-    //Estado del juego 
-    int monedas_recolectadas = 0;
-    int tiene_llave = 0;
-    int niveles_completados = 0;
+    // Iteracion de los 3 niveles
+    for(int nivel = 1; nivel <= 3; nivel++){
+        // Preparar el nivel: posicionar jugador en 'P' del nuevo mapa
+        cambiar_nivel(nivel);
 
-    //2. BUCLE PRINCIPAL DEL JUEGO (Game Loop)
-    char tecla = ' ';
-    int pasos = 0;
-    while(tecla != 'q' && tecla != 'Q'){
+        // Obtener puntero al mapa activo (usa nivel_actual que seteó cambiar_nivel)
+        char (*mapa_activo)[COLUMNAS] = mapas[nivel_actual];
 
-        //Llamamos a la funcion de C que calcula e imprime la ventana visible
-        imprimir_mapa();
+        // Contar monedas del nivel usando NASM
+        int monedas_totales_nivel = contar_caracteres_del_mapa((char *)mapa_activo, total_celdas, buscar_moneda);
 
-        printf("\nMonedas en este nivel: %d\n", monedas_totales);
-        printf("Pasos realizados: %d\n", pasos);
-        printf("Posicion del jugador: (%d, %d)\n", jugador_x, jugador_y);
-        printf("Controles: W (Arriba), A (Izquierda), S (Abajo), D (Derecha) | Q (Salir)\n");
+        // Mostrar celdas libres al iniciar nivel 
+        int celdas_libres = contar_celdas_libres((char *)mapa_activo, total_celdas);
+        printf("Nivel %d iniciado. Celdas libres en el mapa: %d\n", nivel, celdas_libres);
+        _getch();
 
-        //Capturamos la entrada del teclado de forma sincrona
-        tecla = _getch();
+        // ── Estado del nivel actual ──
+        int monedas_rec_nivel = 0;
+        int tiene_llave       = 0;
+        int pasos_nivel       = 0;
+        int nivel_terminado   = 0;
 
-        //Guardamos las coordenadas a donde el jugador desea ir
-        int proximo_x = jugador_x;
-        int proximo_y = jugador_y;
-        int intento_movimiento = 0;
+        char tecla = ' ';
 
-        //Evaluamos la tecla presionada
-        switch(tecla){
-            case 'w': case 'W':
-            proximo_x = jugador_x - 1;
-            intento_movimiento = 1;
-            break;
+        // ── Game loop de este nivel ──
+        while(tecla != 'q' && tecla != 'Q' && !nivel_terminado){
 
-            case 's': case 'S':
-            proximo_x = jugador_x + 1;
-            intento_movimiento = 1;
-            break;
+            imprimir_mapa();
 
-            case 'a': case 'A':
-            proximo_y = jugador_y - 1;
-            intento_movimiento = 1;
-            break;
+            printf("Nivel: %d | Monedas: %d/%d | Llave: %s | Pasos: %d\n", nivel, monedas_rec_nivel, monedas_totales_nivel, tiene_llave ? "Si" : "No", pasos_nivel);
+            printf("Posicion: (%d, %d)\n", jugador_x, jugador_y);
+            printf("Controles: W/A/S/D Mover | Q Salir\n");
 
-            case 'd': case 'D':
-            proximo_y = jugador_y + 1;
-            intento_movimiento = 1;
-            break;
-        }
+            tecla = _getch();
+
+            int proximo_x = jugador_x;
+            int proximo_y = jugador_y;
+            int intento_movimiento = 0;
+
+            switch(tecla){
+                case 'w': case 'W': 
+                proximo_x--; intento_movimiento = 1; 
+                break;
+
+                case 's': case 'S': 
+                proximo_x++; intento_movimiento = 1; 
+                break;
+
+                case 'a': case 'A': 
+                proximo_y--; intento_movimiento = 1; 
+                break;
+
+                case 'd': case 'D': 
+                proximo_y++; intento_movimiento = 1; 
+                break;
+            }
 
             if(intento_movimiento){
-            int movimiento_valido = 0;
+                int movimiento_valido = 0;
 
-            // Verificar límites de la matriz
-            if(proximo_x >= 0 && proximo_x < FILAS && proximo_y >= 0 && proximo_y < COLUMNAS){
-                char destino = mapa_nivel1[proximo_x][proximo_y];
+                // Verificar límites antes de llamar a NASM
+                if(proximo_x >= 0 && proximo_x < FILAS &&
+                   proximo_y >= 0 && proximo_y < COLUMNAS){
 
-                // Si es pared, el movimiento no es válido inmediatamente
-                if(destino != '#'){
-                    printf("DEBUG destino='%c' en (%d,%d)\n", destino, proximo_x, proximo_y);
-                    movimiento_valido = validar_movimiento((char *)mapa_nivel1, COLUMNAS, proximo_x, proximo_y);
+                    char destino = mapa_activo[proximo_x][proximo_y];
 
-                    // Si es puerta y no tenemos llave, bloquear el paso
-                    if(movimiento_valido
-                       && detectar_objeto((char *)mapa_nivel1, COLUMNAS, proximo_x, proximo_y, 'D')
-                       && !tiene_llave){
-                        movimiento_valido = 0;
+                    if(destino != '#'){
+                        // Validar con NASM 
+                        movimiento_valido = validar_movimiento((char *)mapa_activo, COLUMNAS, proximo_x, proximo_y);
+
+                        // Bloquear puerta si no tiene llave
+                        // Usamos NASM para detectar el objeto 'D' 
+                        if(movimiento_valido && detectar_objeto((char *)mapa_activo, COLUMNAS, proximo_x, proximo_y, 'D') && !tiene_llave){
+                            movimiento_valido = 0;
+                        }
+                    }
+                }
+
+                if(movimiento_valido){
+                    char destino = mapa_activo[proximo_x][proximo_y];
+
+                    // Recolectar moneda
+                    if(destino == 'M'){
+                        monedas_rec_nivel++;
+                        mapa_activo[proximo_x][proximo_y] = '.';
+                    }
+
+                    // Recoger llave
+                    if(destino == 'K'){
+                        tiene_llave = 1;
+                        mapa_activo[proximo_x][proximo_y] = '.';
+                    }
+
+                    // Abrir puerta con llave
+                    if(destino == 'D' && tiene_llave){
+                        mapa_activo[proximo_x][proximo_y] = '.';
+                    }
+
+                    // Mover jugador en el mapa
+                    mapa_activo[jugador_x][jugador_y] = '.';
+                    jugador_x = proximo_x;
+                    jugador_y = proximo_y;
+                    mapa_activo[jugador_x][jugador_y] = 'P';
+                    pasos_nivel++;
+
+                    // Verificar si llegó a la salida
+                    if(destino == 'E'){
+                        niveles_completados++;
+                        pasos_globales        += pasos_nivel;
+                        monedas_globales_rec  += monedas_rec_nivel;
+                        monedas_globales_tot  += monedas_totales_nivel;
+
+                        // Calcular puntaje parcial con NASM 
+                        int puntaje_parcial = calcular_puntaje(monedas_globales_rec, pasos_globales, niveles_completados);
+
+                        // Mostrar resumen del nivel terminado
+                        mostrar_resumen_nivel(nivel, monedas_rec_nivel, monedas_totales_nivel, pasos_nivel, puntaje_parcial);
+                        nivel_terminado = 1;
                     }
                 }
             }
+        } // fin game loop del nivel
 
-            if(movimiento_valido){
-                char destino = mapa_nivel1[proximo_x][proximo_y];
+        // Si el jugador salió con Q, terminamos todo
+        if(tecla == 'q' || tecla == 'Q') break;
 
-                if(destino == 'M'){
-                    monedas_recolectadas++;
-                    monedas_totales = contar_caracteres_del_mapa((char *)mapa_nivel1, total_celdas, buscar_moneda);
-                }
+    } //fin loop de todos los niveles
 
-                if(destino == 'K'){
-                    tiene_llave = 1;
-                }
+    // ── Resumen final ──
+    int puntaje_final = calcular_puntaje(monedas_globales_rec, pasos_globales, niveles_completados);
 
-                if(destino == 'D' && tiene_llave){
-                    mapa_nivel1[proximo_x][proximo_y] = '.';
-                }
+    mostrar_resumen_final(monedas_globales_rec, monedas_globales_tot, pasos_globales, niveles_completados, puntaje_final);
 
-                mapa_nivel1[jugador_x][jugador_y] = '.';
-                jugador_x = proximo_x;
-                jugador_y = proximo_y;
-                mapa_nivel1[jugador_x][jugador_y] = 'P';
-                pasos++;
-
-                if(destino == 'E'){
-                    niveles_completados++;
-                    int puntaje_parcial = calcular_puntaje(monedas_recolectadas, pasos, niveles_completados);
-                    printf("\nNivel completado! Puntaje parcial: %d\n", puntaje_parcial);
-                    break;
-                }
-            }
-        }
-    }
-    
-    int puntaje_final = calcular_puntaje(monedas_recolectadas, pasos, niveles_completados);
-    printf("\nPuntaje final: %d\n", puntaje_final);
-    printf("\nGracias por jugar BitQuest\n");
     return 0;
+    
 }
