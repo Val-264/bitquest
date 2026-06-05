@@ -3,9 +3,24 @@
 #include <stdlib.h>
 #include <conio.h>
 #include "juego.h"
+/*
+@ TODO arreglar los mapas: no están completos, hay caminos inaccesibles 
+@ TODO quit no debe cerrar el programa es solo para salir del juego, devuelve al menu 
+@ TODO No se está mostrando el resumen final, arreglar 
+@ TODO el puntaje no se está mostrando, areglar función de mostrar puntaje 
+@ TODO areglar calculo depuntaje 
+@ TODO "el mensaje de Nivel iniciado X celdas libres en el mapa" se uestra en  la pantalla anterior al inico del juego, ponerlo en donde está el juego
+@ TODO Hacer menú de inico 
+@ TODo Revisar la forma en que se pasa el mapa como argumento (posicion inicial) 
+@ TODO Rev .asm -> material de clase 
+*/
 
 
-int main () {
+void mostrar_menu_inicio() {
+
+}
+
+void controlar_juego() {
     // INICIALIZACION DEL JUEGO
     int total_celdas = FILAS * COLUMNAS;
     char buscar_moneda = 'M';
@@ -148,6 +163,12 @@ int main () {
     int puntaje_final = calcular_puntaje(monedas_globales_rec, pasos_globales, niveles_completados);
 
     mostrar_resumen_final(monedas_globales_rec, monedas_globales_tot, pasos_globales, niveles_completados, puntaje_final);
+
+}
+
+int main () {
+    // mostrar_menu_inicio();
+    controlar_juego();
 
     return 0;
     
