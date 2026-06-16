@@ -347,4 +347,5 @@ void mostrar_resumen_final(int monedas_rec_total, int monedas_tot_total, int pas
     printf("=================================\n");
     printf("\x1b[0m");
     printf("\nGracias por jugar BitQuest!\n");
+    _getch();
 }
