@@ -1,7 +1,6 @@
 ; Funciones implementadas en NASM.
 bits 64
 
-;Exportacion de las 5 funciones obligatorias para que C las reconozca
 global contar_caracteres_del_mapa
 global validar_movimiento
 global calcular_puntaje
@@ -16,32 +15,31 @@ section .text
 ; Propósito: Recorre toda la matriz en memoria y cuenta cuántas veces
 ;            aparece un carácter específico (por ejemplo 'M' para monedas).
 ;
-; Convención de llamada x64 Windows:
 ;   RCX = char* matriz       -> dirección base del arreglo plano en memoria
 ;   RDX = int tot_celdas     -> total de celdas (FILAS * COLUMNAS = 3600)
 ;   R8B = char caracter      -> el carácter que queremos contar
 ;   Retorna en EAX           -> cantidad de coincidencias encontradas
 ; =========================================================================
 contar_caracteres_del_mapa:
-    xor eax, eax        ; EAX = 0, aquí acumulamos el conteo de coincidencias
-    test rdx, rdx       ; Revisamos si tot_celdas es 0 o negativo
-    jle .fin            ; Si es así, no hay nada que recorrer, salimos
+    xor eax, eax                
+    test rdx, rdx             ; Revisar si tot_celdas <= 0
+    jle .fin                  ; Si tot_celdas <= 0, salir
 
 .bucle:
-    dec rdx                   ; Reducimos el índice (recorremos de 3599 a 0)
-    mov r9b, [rcx + rdx]      ; Leemos el byte en la posición actual del arreglo
+    dec rdx                   ; Reducir el índice (recorrer de 3599 a 0)
+    mov r9b, [rcx + rdx]      ; Leer el byte en la posición actual del arreglo
                               ; rcx = dirección base, rdx = índice actual
                               ; r9b = temporal para no pisar eax
     cmp r9b, r8b              ; ¿El carácter leído es igual al que buscamos?
-    jne .no_es_igual          ; Si no coincide, saltamos sin sumar
-    inc eax                   ; Si coincide, sumamos 1 al contador
+    jne .no_es_igual          ; Si no coincide, saltar sin sumar
+    inc eax                   ; Si coincide, sumar 1 al contador
 
 .no_es_igual:
-    cmp rdx, 0                ; ¿Ya revisamos todas las celdas?
-    jg .bucle                 ; Si rdx > 0, repetimos para la celda anterior
+    cmp rdx, 0                ; Revisar que ya se hayan recorrido todas las celdas
+    jg .bucle                
 
 .fin:
-    ret                       ; Devolvemos el resultado en EAX
+    ret                       
 
 
 ; =========================================================================
@@ -52,7 +50,6 @@ contar_caracteres_del_mapa:
 ;            Calcula el índice plano con: (fila * columnas) + columna
 ;            y lee el carácter en esa posición del mapa.
 ;
-; Convención de llamada x64 Windows:
 ;   RCX  = char* matriz      -> dirección base del mapa
 ;   RDX  = int tot_columnas  -> número de columnas (60)
 ;   R8D  = int x_siguiente   -> fila a la que el jugador quiere ir
@@ -91,7 +88,7 @@ validar_movimiento:
     ret
 
 .no_valido:
-    xor eax, eax              ; Retornamos 0 = bloqueado
+    xor eax, eax              ; Retornar 0 = bloqueado
     ret
 
 
@@ -100,14 +97,13 @@ validar_movimiento:
 ; =========================================================================
 ; Propósito: Calcula el puntaje del jugador aplicando la siguiente fórmula:
 ;
-;   puntaje = (monedas * 150) + (niveles * 1000) - (pasos * 5)
+;   puntaje = (monedas * 150) + (niveles * 1000) - pasos
 ;
 ;   - Cada moneda recolectada vale 150 puntos (recompensa la exploración)
 ;   - Cada nivel completado vale 1000 puntos (recompensa el progreso)
-;   - Cada paso resta 5 puntos (penaliza caminos largos o perderse)
+;   - Cada paso resta 1 punto (penaliza caminos largos o perderse)
 ;   - El resultado mínimo es 0 (nunca devuelve negativo)
 ;
-; Convención de llamada x64 Windows:
 ;   RCX = int monedas_recolectadas
 ;   RDX = int tot_pasos
 ;   R8  = int niveles_ok
@@ -126,8 +122,7 @@ calcular_puntaje:
     ; Paso 3: sumamos ambas recompensas positivas
     add eax, ecx              ; eax = (monedas*500) + (niveles*2000)
 
-    ; Paso 4: restamos la penalización por pasos
-    ; Como ahora vale 1 punto por paso, restamos edx directamente
+    ; Paso 4: restamos la penalización por pasos (-1 punto por cada paso)
     sub eax, edx              ; eax = total - pasos
 
     ; Paso 5: nos aseguramos de no devolver negativo
@@ -147,21 +142,17 @@ calcular_puntaje:
 ;            Funciona igual que validar_movimiento pero en lugar de
 ;            verificar si es pared, compara con el carácter recibido.
 ;
-; Convención de llamada x64 Windows:
 ;   RCX       = char* matriz      -> dirección base del mapa
 ;   RDX       = int columnas      -> número de columnas (60)
 ;   R8D       = int revisar_x     -> fila a revisar
 ;   R9D       = int revisar_y     -> columna a revisar
 ;   [rsp+40]  = char carac_revisar -> quinto parámetro, va en la pila
-;               (en x64 Windows los primeros 4 van en registros,
-;                el 5to en adelante van en la pila a partir de rsp+32,
-;                pero como hay shadow space de 32 bytes, el 5to queda en rsp+40)
 ;   Retorna en EAX: 1 = objeto encontrado, 0 = no encontrado
 ; =========================================================================
 detectar_objeto:
-    xor eax, eax              ; EAX = 0 (asumimos no encontrado)
+    xor eax, eax              
 
-    ; Verificamos límites igual que en validar_movimiento
+    ; Verificar límites igual que en validar_movimiento
     cmp r8d, 0
     jl .fin_det
     cmp r8d, 59
@@ -171,24 +162,22 @@ detectar_objeto:
     cmp r9d, 59
     jg .fin_det
 
-    ; Calculamos índice plano: (fila * columnas) + columna
+    ; Calcular índice plano: (fila * columnas) + columna
     mov r10d, edx             ; r10d = columnas
     mov eax, r8d              ; eax = fila
     imul eax, r10d            ; eax = fila * columnas
     add eax, r9d              ; eax = índice final
 
-    ; Leemos el carácter en esa posición
+    ; Leer el carácter en esa posición
     movzx eax, byte [rcx + rax]
 
-    ; Leemos el quinto parámetro desde la pila
-    ; rsp+40 porque: rsp+0 a rsp+32 es el shadow space reservado,
-    ; y el 5to argumento se apila justo después en rsp+40
-    mov dl, byte [rsp + 40]   ; dl = carácter que queremos detectar
+    ; Leer el quinto parámetro desde la pila
+    mov dl, byte [rsp + 40]   ; dl = carácter que se quiere detectar
 
-    ; Comparamos el carácter del mapa con el que buscamos
+    ; Comparar el carácter del mapa con el que se busca
     cmp al, dl
-    jne .no_coincide          ; Si no coinciden, retornamos 0
-    mov eax, 1                ; Si coinciden, retornamos 1
+    jne .no_coincide          ; Si no coinciden, retornar 0
+    mov eax, 1                ; Si coinciden, retornar 1
     ret
 
 .no_coincide:
@@ -207,31 +196,26 @@ detectar_objeto:
 ;            camino libre ('.'), es decir, celdas transitables vacías.
 ;            Sirve para mostrar información del nivel al iniciarlo.
 ;
-; Convención de llamada x64 Windows:
 ;   RCX = char* matriz       -> dirección base del mapa
 ;   RDX = int tot_celdas     -> total de celdas (3600)
 ;   Retorna en EAX           -> cantidad de celdas libres
 ;
-; NOTA: Usamos r9b como temporal en lugar de al para NO pisar eax,
-;       que es donde acumulamos el conteo. Este fue el bug original.
 ; =========================================================================
 contar_celdas_libres:
-    xor eax, eax              ; EAX = 0, contador de celdas libres
+    xor eax, eax             
     test rdx, rdx
-    jle .fin_libres           ; Si tot_celdas <= 0, salimos
+    jle .fin_libres           ; Si tot_celdas <= 0, salir
 
 .libre_bucle:
-    dec rdx                   ; Reducimos índice (recorremos de 3599 a 0)
-    mov r9b, [rcx + rdx]      ; Leemos carácter en posición actual
-                              ; IMPORTANTE: usamos r9b, NO al,
-                              ; para no destruir el valor acumulado en eax
-    cmp r9b, '.'             ; ¿Es celda libre?
-    jne .no_incremento        ; Si no es '.', no contamos
-    inc eax                   ; Si es '.', sumamos 1 al contador
+    dec rdx                   ; Reducir índice (recorrer de 3599 a 0)
+    mov r9b, [rcx + rdx]      ; Leer carácter en posición actual
+    cmp r9b, '.'              ; ¿Es celda libre?
+    jne .no_incremento        ; Si no es '.', no se cuenta
+    inc eax                   ; Si es '.', se suma 1 al contador
 
 .no_incremento:
-    cmp rdx, 0                ; ¿Terminamos de recorrer todo?
-    jg .libre_bucle           ; Si rdx > 0, seguimos
+    cmp rdx, 0                ; ¿Terminar de recorrer todo?
+    jg .libre_bucle           ; Si rdx > 0, seguir
 
 .fin_libres:
-    ret                       ; Devolvemos el total en EAX
+    ret                       ; Devolver el total en EAX

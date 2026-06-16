@@ -3,16 +3,6 @@
 #include <stdlib.h>
 #include <conio.h>
 #include "juego.h"
-/*
-@ TODO quit no debe cerrar el programa es solo para salir del juego, devuelve al menu
-@ TODO No se está mostrando el resumen final, arreglar
-@ TODO el puntaje no se está mostrando, areglar función de mostrar puntaje
-@ TODO areglar calculo depuntaje
-@ TODO "el mensaje de Nivel iniciado X celdas libres en el mapa" se uestra en  la pantalla anterior al inico del juego, ponerlo en donde está el juego
-@ TODO Hacer menú de inico
-@ TODo Revisar la forma en que se pasa el mapa como argumento (posicion inicial)
-@ TODO Rev .asm -> material de clase
-*/
 
 
 void mostrar_titulo()
@@ -44,22 +34,18 @@ void mostrar_titulo()
     {
         for (int j = 0; j < 26; j++)
         {
-
-            // Miramos el valor numerico de la matriz y pintamos su caracter equivalente
             switch (titulo_bienvenida[i][j])
             {
-            case '#':
-                // Muros: Azul
-                printf("\x1b[94m%c%c", 178, 177);
+            case '#': 
+                printf("\x1b[94m%c%c", 178, 177); // Azul
                 break;
             case '.':
-                // Camino libre: Espacio vacío doble
                 printf("  ");
                 break;
             }
         }
         
-        // Al terminar la fila, reiniciamos el color por seguridad y saltamos de línea
+        // Al terminar la fila, reiniciar el color por seguridad y hacer salto de línea
         printf("\x1b[0m\n");
     }
 
@@ -69,12 +55,13 @@ void mostrar_titulo()
 }
 
 void mostrar_menu_inicio() {
+
     char opcion = ' ';
 
     // Bucle para mantener el menú visible hasta que el usuario decida
     while (opcion != '1' && opcion != '2') {
         system("cls");
-        mostrar_titulo();
+        
         
         printf("\t[1] Iniciar Juego\n");
         printf("\t[2] Salir del Programa\n\n");
@@ -183,7 +170,7 @@ void controlar_juego()
                         movimiento_valido = validar_movimiento((char *)mapa_activo, COLUMNAS, proximo_x, proximo_y);
 
                         // Bloquear puerta si no tiene llave
-                        // Usamos NASM para detectar el objeto 'D'
+                        // Usar NASM para detectar el objeto 'D'
                         if (movimiento_valido && detectar_objeto((char *)mapa_activo, COLUMNAS, proximo_x, proximo_y, 'D') && !tiene_llave)
                         {
                             movimiento_valido = 0;
@@ -241,7 +228,7 @@ void controlar_juego()
             }
         } // fin game loop del nivel
 
-        // Si el jugador salió con Q, terminamos todo
+        // Si el jugador salió con Q, terminar todo
         if (tecla == 'q' || tecla == 'Q')
             break;
 
@@ -255,26 +242,12 @@ void controlar_juego()
 
 int main()
 {
-    char opcion = ' ';
-
-    // Ciclo que mantiene vivo el programa hasta elegir salir
-    while (opcion != '2')
-    {
-        system("cls"); // Limpia la consola al volver al menú
-        mostrar_titulo();
-        
-        printf("\t[1] Iniciar Juego\n");
-        printf("\t[2] Salir del Programa\n\n");
-        printf("\tSeleccione una opcion: ");
-        
-        opcion = _getch(); 
-
-        if (opcion == '1')   {
-            controlar_juego(); // Entra al juego y al terminar/presionar Q, regresa aquí
-        }
-    }
+    mostrar_titulo();
+    mostrar_menu_inicio();
 
     system("cls");
     printf("Gracias por jugar\n");
+
+    system("pause");
     return 0;
 }
