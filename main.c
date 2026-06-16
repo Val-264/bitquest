@@ -228,7 +228,12 @@ void mostrar_menu_inicio() {
     while (opcion != '1' && opcion != '2') {
         system("cls");
         
-        
+        printf("\x1b[33m"); // Amarillo 
+        printf("==================================\n");
+        printf("              MENU\n");
+        printf("==================================\n\n");
+        printf("\x1b[0m");  // Restablecer color
+
         printf("\t[1] Iniciar Juego\n");
         printf("\t[2] Salir del Programa\n\n");
         printf("\tSeleccione una opcion: ");
