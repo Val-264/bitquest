@@ -54,25 +54,6 @@ void mostrar_titulo()
     system("pause");
 }
 
-void mostrar_menu_inicio() {
-
-    char opcion = ' ';
-
-    // Bucle para mantener el menú visible hasta que el usuario decida
-    while (opcion != '1' && opcion != '2') {
-        system("cls");
-        
-        
-        printf("\t[1] Iniciar Juego\n");
-        printf("\t[2] Salir del Programa\n\n");
-        printf("\tSeleccione una opcion: ");
-        
-        opcion = _getch();
-    }
-    
-    return opcion;
-}
-
 void controlar_juego()
 {
     // INICIALIZACION DEL JUEGO
@@ -238,6 +219,27 @@ void controlar_juego()
     int puntaje_final = calcular_puntaje(monedas_globales_rec, pasos_globales, niveles_completados);
 
     mostrar_resumen_final(monedas_globales_rec, monedas_globales_tot, pasos_globales, niveles_completados, puntaje_final);
+}
+
+void mostrar_menu_inicio() {
+
+    char opcion = ' ';
+
+    // Bucle para mantener el menú visible hasta que el usuario decida
+    while (opcion != '1' && opcion != '2') {
+        system("cls");
+        
+        
+        printf("\t[1] Iniciar Juego\n");
+        printf("\t[2] Salir del Programa\n\n");
+        printf("\tSeleccione una opcion: ");
+        
+        opcion = _getch();
+
+        if (opcion == '1')   {
+            controlar_juego(); // Entra al juego y al terminar/presionar Q, regresa aquí
+        }
+    }
 }
 
 int main()
