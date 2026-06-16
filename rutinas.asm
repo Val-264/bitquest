@@ -114,22 +114,21 @@ validar_movimiento:
 ;   Retorna en EAX: puntaje calculado
 ; =========================================================================
 calcular_puntaje:
-    ; Paso 1: monedas * 150
+    ; Paso 1: monedas * 500
     mov eax, ecx              ; eax = monedas
-    imul eax, 150             ; eax = monedas * 150
+    imul eax, 500             ; eax = monedas * 500
 
-    ; Paso 2: niveles * 1000
-    mov ecx, eax              ; guardamos monedas*150 en ecx temporalmente
+    ; Paso 2: niveles * 2000
+    mov ecx, eax              ; guardamos monedas*500 en ecx temporalmente
     mov eax, r8d              ; eax = niveles completados
-    imul eax, 1000            ; eax = niveles * 1000
+    imul eax, 2000            ; eax = niveles * 2000
 
-    ; Paso 3: sumamos ambas partes positivas
-    add eax, ecx              ; eax = (monedas*150) + (niveles*1000)
+    ; Paso 3: sumamos ambas recompensas positivas
+    add eax, ecx              ; eax = (monedas*500) + (niveles*2000)
 
     ; Paso 4: restamos la penalización por pasos
-    mov ecx, edx              ; ecx = pasos
-    imul ecx, 5               ; ecx = pasos * 5
-    sub eax, ecx              ; eax = total - penalización
+    ; Como ahora vale 1 punto por paso, restamos edx directamente
+    sub eax, edx              ; eax = total - pasos
 
     ; Paso 5: nos aseguramos de no devolver negativo
     cmp eax, 0

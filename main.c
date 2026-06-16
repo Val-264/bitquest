@@ -15,6 +15,7 @@
 @ TODO Rev .asm -> material de clase
 */
 
+
 void mostrar_titulo()
 {
     char titulo_bienvenida[20][26] = {
@@ -69,7 +70,21 @@ void mostrar_titulo()
 }
 
 void mostrar_menu_inicio() {
-    mostrar_titulo();
+    char opcion = ' ';
+
+    // Bucle para mantener el menú visible hasta que el usuario decida
+    while (opcion != '1' && opcion != '2') {
+        system("cls");
+        mostrar_titulo();
+        
+        printf("\t[1] Iniciar Juego\n");
+        printf("\t[2] Salir del Programa\n\n");
+        printf("\tSeleccione una opcion: ");
+        
+        opcion = _getch();
+    }
+    
+    return opcion;
 }
 
 void controlar_juego()
@@ -241,8 +256,26 @@ void controlar_juego()
 
 int main()
 {
-    mostrar_menu_inicio();
-    controlar_juego();
+    char opcion = ' ';
 
+    // Ciclo que mantiene vivo el programa hasta elegir salir
+    while (opcion != '2')
+    {
+        system("cls"); // Limpia la consola al volver al menú
+        mostrar_titulo();
+        
+        printf("\t[1] Iniciar Juego\n");
+        printf("\t[2] Salir del Programa\n\n");
+        printf("\tSeleccione una opcion: ");
+        
+        opcion = _getch(); 
+
+        if (opcion == '1')   {
+            controlar_juego(); // Entra al juego y al terminar/presionar Q, regresa aquí
+        }
+    }
+
+    system("cls");
+    printf("Gracias por jugar\n");
     return 0;
 }
