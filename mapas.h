@@ -7,9 +7,6 @@
 #define FILAS 60
 #define COLUMNAS 60
 
-// El mapa se declara extern aquí para que todos los .c vean la misma matriz.
-// La definición real (inicialización) debe ir en un solo archivo .c, no en el header,
-// porque de lo contrario cada .c tendría su propia copia separada del mapa.
 extern char mapa_nivel1[FILAS][COLUMNAS];
 extern char mapa_nivel2[FILAS][COLUMNAS];
 extern char mapa_nivel3[FILAS][COLUMNAS];

@@ -215,12 +215,12 @@ void imprimir_mapa(int nivel, int celdas_libres)
 {
 
     // Calcular las coordenadas de inicio de nuestra ventana de 20x20
-    // Intentamos centrar al jugador restando 10 a su posicion actual
+    // Intentar centrar al jugador restando 10 a su posicion actual
     int inicio_fila = jugador_x - 10;
     int inicio_col = jugador_y - 10;
 
     // Ajustar los limites para que la ventana no intente leer fuera de la matriz (0 - 50)
-    // Si la ventana empieza antes de 0, la forzamos a 0
+    // Si la ventana empieza antes de 0, la forzar a 0
     if (inicio_fila < 0)
     {
         inicio_fila = 0;
@@ -229,7 +229,7 @@ void imprimir_mapa(int nivel, int celdas_libres)
     {
         inicio_col = 0;
     }
-    // Si la ventana se pasa del límite superior (60 - 20 = 40), la detenemos en 40
+    // Si la ventana se pasa del límite superior (60 - 20 = 40), la detener en 40
     if (inicio_fila > FILAS - 20)
     {
         inicio_fila = FILAS - 20;
@@ -239,7 +239,7 @@ void imprimir_mapa(int nivel, int celdas_libres)
         inicio_col = COLUMNAS - 20;
     }
 
-    // Limpiamos la pantalla de la consola (mantiene la vista estática)
+    // Limpiar la pantalla de la consola (mantiene la vista estática)
     system("cls");
 
     printf("\x1b[1;35mNivel %d iniciado. Celdas libres en el mapa: %d\x1b[0m\n\n", nivel, celdas_libres);
@@ -251,7 +251,7 @@ void imprimir_mapa(int nivel, int celdas_libres)
         for (int j = inicio_col; j < inicio_col + 20; j++)
         {
 
-            // Miramos el valor numerico de la matri y pintamos su caracter equivalente
+            // Revisar el valor de la matriz para pintarlo 
             switch (mapas[nivel_actual][i][j])
             {
             case '#':
@@ -287,7 +287,7 @@ void imprimir_mapa(int nivel, int celdas_libres)
                 break;
             }
         }
-        // Al terminar la fila, reiniciamos el color por seguridad y saltamos de línea
+        // Al terminar la fila, reiniciar el color por seguridad y saltar de línea
         printf("\x1b[0m\n");
     }
     // Asegurar que el color de la terminal regrese a la normalidad
@@ -298,7 +298,7 @@ void cambiar_nivel(int nivel)
 {
     nivel_actual = nivel - 1;
 
-    // Buscamos la posición 'P' en el nuevo mapa para colocar al jugador
+    // Buscar la posición 'P' en el nuevo mapa para colocar al jugador
     // Si no se encuentra 'P', el jugador queda en (1,1) por defecto
     jugador_x = 1;
     jugador_y = 1;
@@ -313,7 +313,7 @@ void cambiar_nivel(int nivel)
             {
                 jugador_x = i;
                 jugador_y = j;
-                return; // Encontramos la posición, salimos
+                return; 
             }
         }
     }
