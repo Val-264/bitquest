@@ -1,6 +1,8 @@
 =============================================================================================
-                        INSTRUCCIONES DE COMPILACION Y EJECUCION
+                       INSTRUCCIONES DE COMPILACION Y EJECUCION 
 =============================================================================================
+
+------ Instrucciones para Windows ------
 
 > Desde la carpeta del proyecto:
     - Dar doble clic sobre el build.bat
