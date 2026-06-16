@@ -97,7 +97,7 @@ validar_movimiento:
 ; =========================================================================
 ; Propósito: Calcula el puntaje del jugador aplicando la siguiente fórmula:
 ;
-;   puntaje = (monedas * 150) + (niveles * 1000) - pasos
+;   puntaje = (monedas * 500) + (niveles * 2000) - pasos
 ;
 ;   - Cada moneda recolectada vale 150 puntos (recompensa la exploración)
 ;   - Cada nivel completado vale 1000 puntos (recompensa el progreso)
