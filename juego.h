@@ -62,7 +62,7 @@ extern char (*mapas[3])[COLUMNAS];
 //Variables de posicion del jugador y funcion de renderizado
 extern int jugador_x;
 extern int jugador_y;
-void imprimir_mapa();
+void imprimir_mapa(int nivel, int celdas_libres);
 
 // Nivel activo: 0 = nivel1, 1 = nivel2, 2 = nivel3
 // Se usa en imprimir_mapa() para saber qué mapa dibujar

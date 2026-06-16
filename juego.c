@@ -211,7 +211,7 @@ char mapa_nivel3[FILAS][COLUMNAS] = {
     {'#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#', '#'}
 };
 
-void imprimir_mapa()
+void imprimir_mapa(int nivel, int celdas_libres)
 {
 
     // Calcular las coordenadas de inicio de nuestra ventana de 20x20
@@ -242,7 +242,8 @@ void imprimir_mapa()
     // Limpiamos la pantalla de la consola (mantiene la vista estática)
     system("cls");
 
-    printf("\x1b[1;35m=== BITQUEST (20x20) ===\x1b[0m\n\n");
+    printf("\x1b[1;35mNivel %d iniciado. Celdas libres en el mapa: %d\x1b[0m\n\n", nivel, celdas_libres);
+    
 
     // Imprimir la seccion de 20x20
     for (int i = inicio_fila; i < inicio_fila + 20; i++)

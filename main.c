@@ -80,8 +80,6 @@ void controlar_juego()
 
         // Mostrar celdas libres al iniciar nivel
         int celdas_libres = contar_celdas_libres((char *)mapa_activo, total_celdas);
-        printf("Nivel %d iniciado. Celdas libres en el mapa: %d\n", nivel, celdas_libres);
-        _getch();
 
         // ── Estado del nivel actual ──
         int monedas_rec_nivel = 0;
@@ -94,8 +92,9 @@ void controlar_juego()
         // ── Game loop de este nivel ──
         while (tecla != 'q' && tecla != 'Q' && !nivel_terminado)
         {
+            printf("\x1b[1;35mNivel %d iniciado. Celdas libres en el mapa: %d\x1b[0m\n\n", nivel, celdas_libres);
 
-            imprimir_mapa();
+            imprimir_mapa(nivel, celdas_libres);
 
             printf("Nivel: %d | Monedas: %d/%d | Llave: %s | Pasos: %d\n", nivel, monedas_rec_nivel, monedas_totales_nivel, tiene_llave ? "Si" : "No", pasos_nivel);
             printf("Posicion: (%d, %d)\n", jugador_x, jugador_y);
@@ -237,6 +236,7 @@ void mostrar_menu_inicio() {
         opcion = _getch();
 
         if (opcion == '1')   {
+            opcion = ' ';
             controlar_juego(); // Entra al juego y al terminar/presionar Q, regresa aquí
         }
     }
