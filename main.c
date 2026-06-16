@@ -4,7 +4,6 @@
 #include <conio.h>
 #include "juego.h"
 /*
-@ TODO arreglar los mapas: no están completos, hay caminos inaccesibles
 @ TODO quit no debe cerrar el programa es solo para salir del juego, devuelve al menu
 @ TODO No se está mostrando el resumen final, arreglar
 @ TODO el puntaje no se está mostrando, areglar función de mostrar puntaje
